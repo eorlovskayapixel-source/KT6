@@ -1,13 +1,15 @@
-{ "compilerOptions": { 
-	"target": "ES2022", //Указывает, в какой версии JavaScript будет скомпилирован TypeScript.
-	"module": "Node16", //TypeScript будет использовать правила модулей Node.js версии 16. Это важно для работы с современными пакетами вроде: @modelcontextprotocol/sdk, express, zod
-	"moduleResolution": "Node16", //Говорит TypeScript, как искать импортируемые файлы. TypeScript будет искать файл так же, как это делает Node.js. Для MCP SDK это практически обязательно.
-	"outDir": "./build", //Куда складывать скомпилированные .js файлы.
-	"rootDir": "./src", //Где находится исходный код.
-	"strict": true, //Включает строгую проверку типов.
-	"esModuleInterop": true, //Позволяет писать:import express from "express"; вместо import * as express from "express";
-	"skipLibCheck": true, //Не проверять типы внутри папки:node_modules
-	"forceConsistentCasingInFileNames": true //Проверяет регистр букв в именах файлов.
-}, 
-"include": ["src/**/*"], //Компилировать всё внутри папки:src/
-"exclude": ["node_modules"] }//Не компилировать зависимости.
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "Node16",              
+    "moduleResolution": "Node16",
+    "outDir": "./build",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}

@@ -1,13 +1,15 @@
-import { RowDataPacket } from "mysql2";//тип строки, полученной из mysql2 для того чтоб вытащить массив строк из результатов запроса
+import { RowDataPacket } from "mysql2"; // row type returned by mysql2 queries
 import db from "../config/db.js";
 
-interface VaiheRow extends RowDataPacket {// описывает структуру строки, полученной из БД
+// Shape of a row in the "vaiheet" table
+interface VaiheRow extends RowDataPacket {
   id: number;
   vaihe: string;
   selitys: string;
 }
 
-class Vaihe { //сам класс нашей модели вытащенной из БД - т.е. бизнес-модель этапа
+// Domain model for a thesis stage (vaihe) and its explanation (selitys)
+class Vaihe {
   id: number;
   vaihe: string;
   selitys: string;
@@ -20,18 +22,21 @@ class Vaihe { //сам класс нашей модели вытащенной �
 
  static async findAllVaiheet(): Promise<Vaihe[]> {
     const sql = "SELECT * FROM vaiheet;";
-    const [rows] = await db.execute<VaiheRow[]>(sql);// получили из БД массив строк типа VaiheRow[]
+    const [rows] = await db.execute<VaiheRow[]>(sql);
 
-    const vaiheet:Vaihe[] = rows.map(row => new Vaihe(row.id, row.vaihe, row.selitys)) // преобразовали строки БД в объекты класса Vaihe
+    // Map database rows to Vaihe objects
+    const vaiheet: Vaihe[] = rows.map(row => new Vaihe(row.id, row.vaihe, row.selitys));
 
     return vaiheet;
   }
 
   static async getSelitys(v:string): Promise<string | null> {
-    const sql = "SELECT selitys FROM vaiheet WHERE vaihe = ?"; //? - использую параметр, смотри сюда на V: db.execute(sql,[v])
-    const [rows] = await db.execute(sql,[v]); //получаю обьект типа [rows, fields], но т.к. я беру только [rows], то rows содержит только первый элемент rows, а первый элемент уже самого rows = rows[0] выглядит как {selitys: "viimeistelyvaiheessa ..."}
-    const selitys = (rows as any[]).length > 0 //использую rows as any[] чтоб TypeScript поверил что у него есть метод .length 
-    ? (rows as any[])[0].selitys //и .selitys 
+    // Parameterized query: the value of v is passed separately to prevent SQL injection
+    const sql = "SELECT selitys FROM vaiheet WHERE vaihe = ?";
+    // execute() returns [rows, fields]; rows[0] looks like { selitys: "..." }
+    const [rows] = await db.execute(sql, [v]);
+    const selitys = (rows as any[]).length > 0
+    ? (rows as any[])[0].selitys
     : null;   
 
     return selitys;

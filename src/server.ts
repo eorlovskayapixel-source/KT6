@@ -9,7 +9,8 @@ const app = express();
 app.use(express.json());
 
 app.post("/", async (req, res) => {
-  console.log("Получен MCP запрос"); //MCP-клиент будет общаться с сервером через "POST /" Когда Claude обращается к серверу, запрос приходит сюда.
+  // The MCP client (e.g. Claude) sends every request to "POST /".
+  console.log("MCP request received");
   try {
     const transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: undefined,
@@ -82,7 +83,8 @@ app.post("/", async (req, res) => {
     );
 
     await server.connect(transport);
-    await transport.handleRequest(req, res, req.body); //получает запрос от клиента;передаёт его MCP-серверу;запускает нужный tool;отправляет ответ обратно.
+    // Passes the request to the MCP server, runs the requested tool and sends the response back to the client.
+    await transport.handleRequest(req, res, req.body);
   } catch (error) {
     console.error("Error handling MCP request:", error);
 
@@ -100,5 +102,5 @@ app.post("/", async (req, res) => {
 });
 
 app.listen(3000, () => {
-  console.log("MCP server toimi p 3000");
+  console.log("MCP server running on port 3000");
 });
